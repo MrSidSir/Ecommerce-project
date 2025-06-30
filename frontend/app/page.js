@@ -9,11 +9,12 @@ import FeaturedNewArrival from '@/components/feature/FeaturedNewArrival';
 import ServicesFeatures from '@/components/feature/ServicesFeatures';
 import Footer from '@/components/footer/Footer';
 
+
 export default function HomePage() {
   return (
    <div>
 <HeroSlider />
-<FlashSales />
+ <FlashSales />
 <BrowseCategory />
 <BestSellerSlider />
 <CategoryOfferSection />
@@ -21,7 +22,6 @@ export default function HomePage() {
 <FeaturedNewArrival />
 <ServicesFeatures />
 <Footer />
- 
  </div>
   );
 }
