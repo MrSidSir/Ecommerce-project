@@ -1,158 +1,232 @@
-"use client";
-import React from "react";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
-import { FiEye, FiHeart, FiArrowRight } from "react-icons/fi";
-import "swiper/css";
-import "swiper/css/navigation";
-import "swiper/css/pagination";
+'use client';
+import React, { useState, useEffect } from "react";
+import { ChevronLeft, ChevronRight, ShoppingCart } from "lucide-react";
 
-const BrowseCategory = () => {
+const TopCategories = () => {
+  const [currentSlide, setCurrentSlide] = useState(0);
+  const [slidesToShow, setSlidesToShow] = useState(4);
+
   const categories = [
     {
       id: 1,
       name: "Women's Fashion",
       items: 320,
-      image: "https://images.unsplash.com/photo-1515372039744-b8f02a3ae446?w=800&h=600&fit=crop&crop=center",
-      discount: "Up to 50% Off",
+      image: "https://images.unsplash.com/photo-1514996937319-344454492b37?auto=format&fit=crop&w=800&q=80",
+      discount: "Up to 50%",
+      rating: 4.8,
+      price: "$199",
     },
     {
       id: 2,
       name: "Men's Fashion",
       items: 280,
-      image: "https://images.unsplash.com/photo-1617127365659-c47fa864d8bc?w=800&h=600&fit=crop&crop=center",
-      discount: "Up to 40% Off",
+      image: "https://images.unsplash.com/photo-1533676802871-c1d3932c0f37?auto=format&fit=crop&w=800&q=80",
+      discount: "Up to 40%",
+      rating: 4.6,
+      price: "$149",
     },
     {
       id: 3,
       name: "Electronics",
       items: 150,
-      image: "https://images.unsplash.com/photo-1498049794561-7780e7231661?w=800&h=600&fit=crop&crop=center",
-      discount: "Up to 30% Off",
+      image: "https://images.unsplash.com/photo-1581093588401-59d6cdebe5b4?auto=format&fit=crop&w=800&q=80",
+      discount: "Up to 30%",
+      rating: 4.9,
+      price: "$299",
     },
     {
       id: 4,
       name: "Home & Lifestyle",
       items: 220,
-      image: "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=800&h=600&fit=crop&crop=center",
-      discount: "Up to 25% Off",
+      image: "https://images.unsplash.com/photo-1599838457545-8350b7a5e768?auto=format&fit=crop&w=800&q=80",
+      discount: "Up to 25%",
+      rating: 4.7,
+      price: "$89",
     },
     {
       id: 5,
       name: "Sports & Outdoor",
       items: 90,
-      image: "https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800&h=600&fit=crop&crop=center",
-      discount: "Up to 35% Off",
+      image: "https://images.unsplash.com/photo-1517649763962-0c623066013b?auto=format&fit=crop&w=800&q=80",
+      discount: "Up to 35%",
+      rating: 4.5,
+      price: "$129",
     },
     {
       id: 6,
       name: "Beauty & Health",
       items: 180,
-      image: "https://images.unsplash.com/photo-1596462502278-27bfdc403348?w=800&h=600&fit=crop&crop=center",
-      discount: "Up to 45% Off",
+      image: "https://images.unsplash.com/photo-1596461404969-9c554f1d1222?auto=format&fit=crop&w=800&q=80",
+      discount: "Up to 45%",
+      rating: 4.8,
+      price: "$69",
     },
     {
       id: 7,
       name: "Jewelry & Watches",
       items: 95,
-      image: "https://images.unsplash.com/photo-1515562141207-7a88fb7ce338?w=800&h=600&fit=crop&crop=center",
-      discount: "Up to 60% Off",
+      image: "https://images.unsplash.com/photo-1600181952084-3e7616f5f79b?auto=format&fit=crop&w=800&q=80",
+      discount: "Up to 60%",
+      rating: 4.4,
+      price: "$249",
     },
     {
       id: 8,
       name: "Books & Stationery",
       items: 210,
-      image: "https://images.unsplash.com/photo-1481627834876-b7833e8f5570?w=800&h=600&fit=crop&crop=center",
-      discount: "Up to 30% Off",
+      image: "https://in.images.search.yahoo.com/search/images;_ylt=Awr1QZyDJ2NoXFoNTQu9HAx.;_ylu=c2VjA3NlYXJjaARzbGsDYnV0dG9u;_ylc=X1MDMjExNDcyMzAwNQRfcgMyBGZyA21jYWZlZQRmcjIDcDpzLHY6aSxtOnNiLXRvcARncHJpZAN2M095M0V4ZFRXZWRDeGlncUlDWmtBBG5fcnNsdAMwBG5fc3VnZwMwBG9yaWdpbgNpbi5pbWFnZXMuc2VhcmNoLnlhaG9vLmNvbQRwb3MDMARwcXN0cgMEcHFzdHJsAzAEcXN0cmwDNDQEcXVlcnkDQm9va3MlMjAlMjYlMjBTdGF0aW9uZXJ5JTIwb25saW5lJTIwc2hvcHBpbmclMjBoZCUyMGltYWdlcwR0X3N0bXADMTc1MTMyODc4Mw--?p=Books+%26+Stationery+online+shopping+hd+images&fr=mcafee&fr2=p%3As%2Cv%3Ai%2Cm%3Asb-top&ei=UTF-8&x=wrt&type=E210IN885G0#id=4&iurl=https%3A%2F%2Fruknumaiyya.com%2Fwp-content%2Fuploads%2F2023%2F03%2FRukoon-Banner3.webp&action=click",
+      discount: "Up to 30%",
+      rating: 4.6,
+      price: "$39",
     },
   ];
 
+  useEffect(() => {
+    const handleResize = () => {
+      if (window.innerWidth < 480) setSlidesToShow(1);
+      else if (window.innerWidth < 640) setSlidesToShow(2);
+      else if (window.innerWidth < 768) setSlidesToShow(3);
+      else if (window.innerWidth < 1024) setSlidesToShow(4);
+      else if (window.innerWidth < 1200) setSlidesToShow(5);
+      else setSlidesToShow(6);
+    };
+
+    handleResize();
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      nextSlide();
+    }, 3000);
+    return () => clearInterval(interval);
+  }, [currentSlide, slidesToShow]);
+
+  const nextSlide = () => {
+    setCurrentSlide((prev) =>
+      prev + 1 >= categories.length - slidesToShow + 1 ? 0 : prev + 1
+    );
+  };
+
+  const prevSlide = () => {
+    setCurrentSlide((prev) =>
+      prev <= 0 ? categories.length - slidesToShow : prev - 1
+    );
+  };
+
+  const renderStars = (rating) =>
+    Array.from({ length: 5 }, (_, i) => (
+      <span
+        key={i}
+        className={`text-sm ${
+          i < Math.floor(rating) ? "text-yellow-400" : "text-gray-300"
+        }`}
+      >
+        ★
+      </span>
+    ));
+
   return (
-    <div className="max-w-[1200px] mx-auto px-4 py-8">
-      <div className="flex justify-between items-center mb-4">
-        <h2 className="text-2xl font-semibold">Top Categories</h2>
-        <button className="bg-red-600 text-white px-4 py-2 rounded text-sm hover:bg-red-700 transition">
+    <div className="w-full max-w-[1200px] mx-auto px-4 py-8">
+      <div className="flex justify-between items-center mb-6">
+        <h2 className="text-2xl font-semibold text-gray-900">Top Categories</h2>
+        <button className="bg-red-600 hover:bg-red-700 text-white px-4 py-2 rounded text-sm">
           View All
         </button>
       </div>
 
-      <Swiper
-        modules={[Navigation, Pagination, Autoplay]}
-        slidesPerView={2}
-        spaceBetween={20}
-        navigation
-        pagination={{ clickable: true }}
-        autoplay={{ delay: 3000, disableOnInteraction: false }}
-        loop={true}
-        breakpoints={{
-          480: { slidesPerView: 2 },
-          640: { slidesPerView: 3 },
-          768: { slidesPerView: 4 },
-          1024: { slidesPerView: 5 },
-          1200: { slidesPerView: 6 },
-        }}
-      >
-        {categories.map((category) => (
-          <SwiperSlide key={category.id}>
-            <div className="border rounded-lg overflow-hidden hover:shadow-md transition group cursor-pointer relative">
-              {/* Discount Badge */}
-              <span className="absolute top-2 left-2 bg-red-500 text-white text-xs px-2 py-1 rounded z-10">
-                {category.discount}
-              </span>
-              
-              {/* Action icons - appear on hover */}
-              <div className="absolute top-2 right-2 flex flex-col gap-2 opacity-0 group-hover:opacity-100 transition-opacity z-10">
-                <button className="bg-white p-1.5 rounded-full shadow-md hover:bg-gray-100">
-                  <FiHeart className="text-gray-600 text-xs" />
-                </button>
-                <button className="bg-white p-1.5 rounded-full shadow-md hover:bg-gray-100">
-                  <FiEye className="text-gray-600 text-xs" />
-                </button>
-              </div>
+      <div className="relative">
+        <button
+          onClick={prevSlide}
+          className="absolute left-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2"
+        >
+          <ChevronLeft className="w-5 h-5 text-gray-600" />
+        </button>
 
-              {/* Image with overlay on hover */}
-              <div className="relative overflow-hidden">
-                <img
-                  src={category.image}
-                  alt={category.name}
-                  className="w-full h-32 object-cover group-hover:scale-105 transition-transform duration-300"
-                />
-                {/* Dark overlay on hover */}
-                <div className="absolute inset-0 bg-black bg-opacity-0 group-hover:bg-opacity-20 transition-all duration-300"></div>
-                
-                {/* Shop Now button - appears on hover */}
-                <div className="absolute bottom-2 left-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                  <button className="w-full bg-white text-black py-1.5 rounded text-xs font-medium hover:bg-gray-100 flex items-center justify-center gap-1">
-                    Shop Now <FiArrowRight className="text-xs" />
-                  </button>
-                </div>
-              </div>
+        <button
+          onClick={nextSlide}
+          className="absolute right-2 top-1/2 -translate-y-1/2 z-10 bg-white shadow rounded-full p-2"
+        >
+          <ChevronRight className="w-5 h-5 text-gray-600" />
+        </button>
 
-              <div className="p-3 text-center">
-                <h3 className="font-medium text-gray-800 text-sm">{category.name}</h3>
-                <p className="text-xs text-gray-500 mt-1">{category.items} items</p>
-                
-                {/* Category rating/popularity indicator */}
-                <div className="flex justify-center items-center mt-2">
-                  <div className="flex gap-1">
-                    {[...Array(5)].map((_, i) => (
-                      <div
-                        key={i}
-                        className={`w-1 h-1 rounded-full ${
-                          i < 4 ? "bg-yellow-400" : "bg-gray-300"
-                        }`}
-                      ></div>
-                    ))}
+        <div className="overflow-hidden">
+          <div
+            className="flex transition-transform duration-500 ease-in-out gap-5"
+            style={{
+              transform: `translateX(-${(currentSlide * 100) / slidesToShow}%)`,
+              width: `${(categories.length * 100) / slidesToShow}%`,
+            }}
+          >
+            {categories.map((category) => (
+              <div
+                key={category.id}
+                className="flex-shrink-0"
+                style={{ width: `${100 / slidesToShow}%` }}
+              >
+                <div className="bg-white border rounded-lg overflow-hidden shadow hover:shadow-lg transition duration-300 hover:-translate-y-1 group cursor-pointer">
+                  <div className="relative h-48 bg-gray-100 overflow-hidden">
+                    <img
+                      src={category.image}
+                      alt={category.name}
+                      className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300"
+                    />
+                    <div className="absolute top-3 left-3 bg-red-600 text-white px-2 py-1 rounded text-xs">
+                      {category.discount}
+                    </div>
                   </div>
-                  <span className="text-xs text-gray-500 ml-2">Popular</span>
+
+                  <div className="p-4">
+                    <h3 className="font-semibold text-gray-900 mb-2 text-lg">
+                      {category.name}
+                    </h3>
+
+                    <div className="flex items-center gap-2 mb-2">
+                      <div className="flex">{renderStars(category.rating)}</div>
+                      <span className="text-sm text-gray-600">
+                        ({category.rating})
+                      </span>
+                    </div>
+
+                    <p className="text-sm text-gray-500 mb-2">
+                      {category.items} items
+                    </p>
+
+                    <div className="text-xl font-bold text-gray-900 mb-3">
+                      {category.price}
+                    </div>
+
+                    <button className="w-full bg-black hover:bg-gray-800 text-white py-2 px-4 rounded-md flex items-center justify-center gap-2">
+                      <ShoppingCart className="w-4 h-4" />
+                      Add to Cart
+                    </button>
+                  </div>
                 </div>
               </div>
-            </div>
-          </SwiperSlide>
-        ))}
-      </Swiper>
+            ))}
+          </div>
+        </div>
+
+        <div className="flex justify-center mt-6 gap-2">
+          {Array.from(
+            { length: Math.ceil(categories.length / slidesToShow) },
+            (_, i) => (
+              <button
+                key={i}
+                onClick={() => setCurrentSlide(i * slidesToShow)}
+                className={`w-2 h-2 rounded-full ${
+                  Math.floor(currentSlide / slidesToShow) === i
+                    ? "bg-red-600"
+                    : "bg-gray-300"
+                }`}
+              ></button>
+            )
+          )}
+        </div>
+      </div>
     </div>
   );
 };
 
-export default BrowseCategory;
+export default TopCategories;

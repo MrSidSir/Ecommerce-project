@@ -8,16 +8,21 @@ import {
 const router = express.Router();
 
 /**
- * ✅ Route: /api/cart/:userId
- * - GET: getCart() to get user's cart
- * - POST: addToCart() to add item to user's cart
+ * ✅ Route: GET /api/cart/:userId
+ * Get user's cart
  */
-router.route("/:userId").get(getCart).post(addToCart);
+router.get("/:userId", getCart);
 
 /**
- * ✅ Route: /api/cart/:userId/:productId
- * - DELETE: removeFromCart() to delete item from cart
+ * ✅ Route: POST /api/cart/:userId
+ * Add item to user's cart
  */
-router.route("/:userId/:productId").delete(removeFromCart);
+router.post("/:userId", addToCart);
+
+/**
+ * ✅ Route: DELETE /api/cart/:userId/:productId
+ * Remove item from cart
+ */
+router.delete("/:userId/:productId", removeFromCart);
 
 export default router;

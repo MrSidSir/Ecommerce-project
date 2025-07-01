@@ -1,0 +1,273 @@
+/* CategoryDropdown.css */
+.category-dropdown-container {
+  position: relative;
+  background: #f5f5f5;
+  border-radius: 12px;
+  padding: 20px;
+  max-width: 400px;
+  margin: 20px auto;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.category-dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 15px;
+}
+
+.category-title {
+  color: #9C27B0;
+  font-size: 18px;
+  font-weight: 600;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.dropdown-toggle {
+  background: none;
+  border: none;
+  font-size: 20px;
+  color: #666;
+  cursor: pointer;
+  padding: 5px;
+  transition: transform 0.3s ease;
+}
+
+.dropdown-toggle:hover {
+  color: #9C27B0;
+}
+
+.icon-chevron.up {
+  transform: rotate(180deg);
+}
+
+.category-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+.size-badge {
+  position: absolute;
+  bottom: 10px;
+  left: 10px;
+  background: #9C27B0;
+  color: white;
+  padding: 4px 8px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+/* Dropdown Menu */
+.category-dropdown-menu {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background: white;
+  border-radius: 8px;
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+  z-index: 1000;
+  margin-top: 5px;
+  max-height: 400px;
+  overflow-y: auto;
+}
+
+.dropdown-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px 20px;
+  border-bottom: 1px solid #eee;
+  font-weight: 600;
+  color: #333;
+}
+
+.close-btn {
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #666;
+  cursor: pointer;
+  padding: 5px;
+}
+
+.close-btn:hover {
+  color: #333;
+}
+
+.dropdown-list {
+  padding: 10px;
+}
+
+/* CategoryCard.css */
+.category-card {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px 15px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: white;
+  border: 2px solid transparent;
+  min-height: 100px;
+  position: relative;
+}
+
+.category-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+}
+
+.category-card.selected {
+  color: white;
+  border-color: transparent;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.category-card.dropdown {
+  flex-direction: row;
+  padding: 15px 20px;
+  margin-bottom: 5px;
+  min-height: auto;
+  border-radius: 6px;
+}
+
+.category-card.dropdown:hover {
+  background: #f8f9fa;
+  transform: none;
+}
+
+.category-card.dropdown.selected {
+  background: #9C27B0;
+  color: white;
+}
+
+.category-icon {
+  font-size: 24px;
+  margin-bottom: 8px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+}
+
+.category-card.dropdown .category-icon {
+  margin-bottom: 0;
+  margin-right: 12px;
+  width: 24px;
+  height: 24px;
+  font-size: 20px;
+}
+
+.category-name {
+  font-size: 14px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.2;
+}
+
+.category-card.dropdown .category-name {
+  flex: 1;
+  text-align: left;
+}
+
+.category-indicator {
+  margin-left: auto;
+  font-size: 16px;
+  opacity: 0.7;
+}
+
+/* Icon classes - aap apne icons ke according adjust kar sakte hain */
+.icon-phone::before { content: "📱"; }
+.icon-computer::before { content: "💻"; }
+.icon-smartwatch::before { content: "⌚"; }
+.icon-camera::before { content: "📷"; }
+.icon-headphones::before { content: "🎧"; }
+.icon-gaming::before { content: "🎮"; }
+.icon-category::before { content: "📂"; }
+.icon-chevron::before { content: "▼"; }
+.icon-arrow-right::before { content: "→"; }
+.icon-close::before { content: "✕"; }
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .category-dropdown-container {
+    margin: 10px;
+    padding: 15px;
+    max-width: none;
+  }
+  
+  .category-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 10px;
+  }
+  
+  .category-card {
+    padding: 15px 10px;
+    min-height: 80px;
+  }
+  
+  .category-dropdown-menu {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    margin: 0;
+    border-radius: 0;
+    max-height: none;
+  }
+  
+  .dropdown-list {
+    padding: 20px;
+  }
+}
+
+@media (max-width: 480px) {
+  .category-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .category-card {
+    flex-direction: row;
+    text-align: left;
+    padding: 15px;
+  }
+  
+  .category-icon {
+    margin-bottom: 0;
+    margin-right: 12px;
+  }
+}
+
+/* Animation Classes */
+.dropdown-enter {
+  opacity: 0;
+  transform: translateY(-10px);
+}
+
+.dropdown-enter-active {
+  opacity: 1;
+  transform: translateY(0);
+  transition: all 0.3s ease;
+}
+
+.dropdown-exit {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dropdown-exit-active {
+  opacity: 0;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}

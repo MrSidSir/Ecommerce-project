@@ -20,16 +20,7 @@ router.route("/")
   .get(getProducts)       // Calls getProducts function from controller
   .post(createProduct);   // Calls createProduct function from controller
 
-/**
- * ✅ Route: GET /api/products/:id
- * 👉 Calls getProductById() to fetch single product by its ID
- *
- * ✅ Route: PUT /api/products/:id
- * 👉 Calls updateProduct() to update product details by ID
- *
- * ✅ Route: DELETE /api/products/:id
- * 👉 Calls deleteProduct() to remove product by ID
- */
+
 router.route("/:id")
   .get(getProductById)    // Calls getProductById function from controller
   .put(updateProduct)     // Calls updateProduct function from controller

@@ -13,10 +13,7 @@ const router = express.Router();
  */
 router.route("/").post(createOrder);
 
-/**
- * ✅ Route: GET /api/orders/:userId
- * Calls getOrdersByUser() to fetch user's all orders
- */
+
 router.route("/:userId").get(getOrdersByUser);
 
 /**
