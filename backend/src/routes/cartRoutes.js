@@ -1,28 +1,42 @@
-import express from "express";
+// 📁 backend/routes/cartRoutes.js
+import express from 'express';
 import {
-  getCart,        // ✅ Function to get cart by userId
-  addToCart,      // ✅ Function to add item to cart
-  removeFromCart, // ✅ Function to remove item from cart
-} from "../controllers/cartController.js";
+  getCart,
+  addToCart,
+  updateCartItem,
+  removeFromCart,
+  clearCart,
+  getCartCount
+} from '../controllers/cartController.js';
+import { protect } from '../middleware/authMiddleware.js';
 
 const router = express.Router();
 
-/**
- * ✅ Route: GET /api/cart/:userId
- * Get user's cart
- */
-router.get("/:userId", getCart);
+// All cart routes require authentication
+router.use(protect);
 
-/**
- * ✅ Route: POST /api/cart/:userId
- * Add item to user's cart
- */
-router.post("/:userId", addToCart);
+// @route   GET /api/cart
+// @desc    Get user cart
+router.get('/', getCart);
 
-/**
- * ✅ Route: DELETE /api/cart/:userId/:productId
- * Remove item from cart
- */
-router.delete("/:userId/:productId", removeFromCart);
+// @route   GET /api/cart/count
+// @desc    Get cart items count
+router.get('/count', getCartCount);
+
+// @route   POST /api/cart/add
+// @desc    Add item to cart
+router.post('/add', addToCart);
+
+// @route   PUT /api/cart/update
+// @desc    Update cart item quantity
+router.put('/update', updateCartItem);
+
+// @route   DELETE /api/cart/remove/:productId
+// @desc    Remove item from cart
+router.delete('/remove/:productId', removeFromCart);
+
+// @route   DELETE /api/cart/clear
+// @desc    Clear entire cart
+router.delete('/clear', clearCart);
 
 export default router;

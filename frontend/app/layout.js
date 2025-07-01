@@ -1,8 +1,9 @@
 import "./globals.css";
 import { Geist, Geist_Mono } from "next/font/google";
-import AuthProvider from "@/components/context/AuthContext";
-import Navbar from "@/components/navbar/Navbar";
-import Footer from "@/components/footer/Footer"; // ✅ import your Footer component here
+import { CartProvider } from "../src/components/context/CartContext";
+import AuthProvider from "../src/components/context/AuthContext";
+import Navbar from "../src/components/navbar/Navbar";
+import Footer from "../src/components/footer/Footer";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -24,9 +25,11 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
         <AuthProvider>
-          <Navbar />
-          {children}
-          <Footer />   {/* ✅ added Footer globally here */}
+          <CartProvider>
+            <Navbar />
+            <main>{children}</main>
+          <Footer />
+          </CartProvider>
         </AuthProvider>
       </body>
     </html>

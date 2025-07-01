@@ -7,6 +7,7 @@ import OurProducts from '@/components/products/ourproducts';
 import FeaturedNewArrival from '@/components/feature/FeaturedNewArrival';
 import ServicesFeatures from '@/components/feature/ServicesFeatures';
 import CategoryDropdown from '@/components/CategoryDropdown/CategoryDropdown';
+import CartItem from '../src/components/cart/CartItem';
 
 export default function HomePage() {
   return (
