@@ -3,9 +3,269 @@
 
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
-import CartItem from '@/components/cart/CartItem';
-import CartSummary from '@/components/cart/CartSummary';
+import Image from 'next/image';
 
+// Inline CartItem component to avoid import issues
+const CartItem = ({ item, onUpdateQuantity, onRemove, updating }) => {
+  const [quantity, setQuantity] = useState(item.quantity);
+
+  const handleQuantityChange = (newQuantity) => {
+    if (newQuantity < 1) return;
+    setQuantity(newQuantity);
+    onUpdateQuantity(item.product._id || item.product, newQuantity);
+  };
+
+  const handleRemove = () => {
+    onRemove(item.product._id || item.product);
+  };
+
+  return (
+    <div className="flex items-center space-x-4 p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow">
+      {/* Product Image */}
+      <div className="flex-shrink-0">
+        <div className="relative w-20 h-20 bg-gray-100 rounded-lg overflow-hidden">
+          {item.image ? (
+            <Image
+              src={item.image}
+              alt={item.name}
+              fill
+              className="object-cover"
+              onError={(e) => {
+                e.target.src = '/images/placeholder.jpg';
+              }}
+            />
+          ) : (
+            <div className="w-full h-full flex items-center justify-center bg-gray-200">
+              <span className="text-gray-400 text-xs">No Image</span>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* Product Details */}
+      <div className="flex-1 min-w-0">
+        <h3 className="text-lg font-medium text-gray-900 truncate">
+          {item.name}
+        </h3>
+        <p className="text-sm text-gray-500">
+          ${item.price.toFixed(2)} each
+        </p>
+      </div>
+
+      {/* Quantity Controls */}
+      <div className="flex items-center space-x-2">
+        <button
+          onClick={() => handleQuantityChange(quantity - 1)}
+          disabled={updating || quantity <= 1}
+          className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span className="text-lg font-medium">−</span>
+        </button>
+        
+        <input
+          type="number"
+          min="1"
+          value={quantity}
+          onChange={(e) => {
+            const newQuantity = parseInt(e.target.value);
+            if (newQuantity > 0) {
+              setQuantity(newQuantity);
+            }
+          }}
+          onBlur={() => {
+            if (quantity !== item.quantity) {
+              handleQuantityChange(quantity);
+            }
+          }}
+          disabled={updating}
+          className="w-16 text-center border border-gray-300 rounded-md py-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent disabled:opacity-50"
+        />
+        
+        <button
+          onClick={() => handleQuantityChange(quantity + 1)}
+          disabled={updating}
+          className="w-8 h-8 flex items-center justify-center border border-gray-300 rounded-md hover:bg-gray-50 disabled:opacity-50 disabled:cursor-not-allowed"
+        >
+          <span className="text-lg font-medium">+</span>
+        </button>
+      </div>
+
+      {/* Subtotal */}
+      <div className="text-right min-w-0">
+        <p className="text-lg font-semibold text-gray-900">
+          ${item.subtotal.toFixed(2)}
+        </p>
+        {quantity !== item.quantity && (
+          <p className="text-xs text-blue-500">Updating...</p>
+        )}
+      </div>
+
+      {/* Remove Button */}
+      <button
+        onClick={handleRemove}
+        disabled={updating}
+        className="p-2 text-red-500 hover:bg-red-50 rounded-md transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+        title="Remove item"
+      >
+        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16" />
+        </svg>
+      </button>
+    </div>
+  );
+};
+
+// Inline CartSummary component to avoid import issues
+const CartSummary = ({ cart, onCheckout, updating }) => {
+  const [couponCode, setCouponCode] = useState('');
+  const [appliedCoupon, setAppliedCoupon] = useState(null);
+  const [discount, setDiscount] = useState(0);
+
+  const subtotal = cart?.totalAmount || 0;
+  const shipping = subtotal > 100 ? 0 : 10; // Free shipping over $100
+  const tax = subtotal * 0.08; // 8% tax
+  const total = subtotal + shipping + tax - discount;
+
+  const applyCoupon = () => {
+    const validCoupons = {
+      'SAVE10': { type: 'percentage', value: 10 },
+      'WELCOME20': { type: 'percentage', value: 20 },
+      'FLAT50': { type: 'fixed', value: 50 }
+    };
+
+    const coupon = validCoupons[couponCode.toUpperCase()];
+    if (coupon) {
+      const discountAmount = coupon.type === 'percentage' 
+        ? (subtotal * coupon.value) / 100 
+        : coupon.value;
+      
+      setDiscount(Math.min(discountAmount, subtotal));
+      setAppliedCoupon({ code: couponCode.toUpperCase(), ...coupon });
+      setCouponCode('');
+    } else {
+      alert('Invalid coupon code');
+    }
+  };
+
+  const removeCoupon = () => {
+    setDiscount(0);
+    setAppliedCoupon(null);
+  };
+
+  return (
+    <div className="bg-white rounded-lg shadow p-6 sticky top-4">
+      <h2 className="text-xl font-semibold mb-6">Order Summary</h2>
+
+      <div className="space-y-3 mb-6">
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-600">Subtotal</span>
+          <span className="font-medium">${subtotal.toFixed(2)}</span>
+        </div>
+        
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-600">Shipping</span>
+          <span className="font-medium">
+            {shipping === 0 ? (
+              <span className="text-green-600">Free</span>
+            ) : (
+              `$${shipping.toFixed(2)}`
+            )}
+          </span>
+        </div>
+        
+        <div className="flex justify-between text-sm">
+          <span className="text-gray-600">Tax</span>
+          <span className="font-medium">${tax.toFixed(2)}</span>
+        </div>
+
+        {discount > 0 && (
+          <div className="flex justify-between text-sm text-green-600">
+            <span>Discount ({appliedCoupon?.code})</span>
+            <span>-${discount.toFixed(2)}</span>
+          </div>
+        )}
+
+        <div className="border-t pt-3">
+          <div className="flex justify-between text-lg font-semibold">
+            <span>Total</span>
+            <span>${total.toFixed(2)}</span>
+          </div>
+        </div>
+      </div>
+
+      <div className="mb-6">
+        <h3 className="text-sm font-medium mb-3">Coupon Code</h3>
+        
+        {appliedCoupon ? (
+          <div className="flex items-center justify-between bg-green-50 border border-green-200 rounded-lg p-3">
+            <div className="flex items-center space-x-2">
+              <span className="text-green-600 text-sm font-medium">{appliedCoupon.code}</span>
+              <span className="text-green-600 text-xs">Applied</span>
+            </div>
+            <button
+              onClick={removeCoupon}
+              className="text-red-500 hover:text-red-600 text-sm"
+            >
+              Remove
+            </button>
+          </div>
+        ) : (
+          <div className="flex space-x-2">
+            <input
+              type="text"
+              value={couponCode}
+              onChange={(e) => setCouponCode(e.target.value)}
+              placeholder="Enter coupon code"
+              className="flex-1 border border-gray-300 rounded-md px-3 py-2 text-sm focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+            />
+            <button
+              onClick={applyCoupon}
+              disabled={!couponCode.trim()}
+              className="bg-gray-800 text-white px-4 py-2 rounded-md text-sm hover:bg-gray-900 disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              Apply
+            </button>
+          </div>
+        )}
+        
+        <div className="text-xs text-gray-500 mt-1">
+          Try: SAVE10, WELCOME20, FLAT50
+        </div>
+      </div>
+
+      {subtotal < 100 && subtotal > 0 && (
+        <div className="bg-blue-50 border border-blue-200 rounded-lg p-3 mb-6">
+          <p className="text-sm text-blue-700">
+            🚚 Add ${(100 - subtotal).toFixed(2)} more for free shipping!
+          </p>
+        </div>
+      )}
+
+      <button
+        onClick={onCheckout}
+        disabled={updating || !cart || cart.items.length === 0}
+        className="w-full bg-red-500 text-white py-3 rounded-lg font-medium hover:bg-red-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+      >
+        {updating ? 'Processing...' : 'Proceed to Checkout'}
+      </button>
+
+      <div className="mt-6 pt-6 border-t space-y-2">
+        <div className="flex items-center space-x-2 text-sm text-gray-600">
+          <span>🔒</span>
+          <span>Secure checkout</span>
+        </div>
+        <div className="flex items-center space-x-2 text-sm text-gray-600">
+          <span>↩️</span>
+          <span>30-day return policy</span>
+        </div>
+        <div className="flex items-center space-x-2 text-sm text-gray-600">
+          <span>📞</span>
+          <span>24/7 customer support</span>
+        </div>
+      </div>
+    </div>
+  );
+};
 
 const CartPage = () => {
   const [cart, setCart] = useState(null);
@@ -187,7 +447,6 @@ const CartPage = () => {
   return (
     <div className="min-h-screen bg-gray-50">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Header */}
         <div className="flex items-center justify-between mb-8">
           <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
           <button
@@ -199,7 +458,6 @@ const CartPage = () => {
         </div>
 
         {!cart || cart.items.length === 0 ? (
-          // Empty Cart
           <div className="bg-white rounded-lg shadow p-8 text-center">
             <div className="text-6xl mb-4">🛒</div>
             <h2 className="text-2xl font-semibold text-gray-900 mb-2">Your cart is empty</h2>
@@ -212,9 +470,7 @@ const CartPage = () => {
             </button>
           </div>
         ) : (
-          // Cart with Items
           <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            {/* Cart Items */}
             <div className="lg:col-span-2 space-y-4">
               <div className="bg-white rounded-lg shadow p-6">
                 <div className="flex items-center justify-between mb-6">
@@ -246,7 +502,6 @@ const CartPage = () => {
               </div>
             </div>
 
-            {/* Cart Summary */}
             <div className="lg:col-span-1">
               <CartSummary
                 cart={cart}
