@@ -3,8 +3,10 @@ import LoginForm from "@/components/auth/LoginForm";
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-100">
-      <LoginForm />
+    <div className="min-h-screen flex items-center justify-center bg-gray-100 px-2 sm:px-0 ">
+      <div className="w-full">
+        <LoginForm />
+      </div>
     </div>
   );
 }

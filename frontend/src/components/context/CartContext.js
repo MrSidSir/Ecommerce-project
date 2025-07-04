@@ -1,6 +1,7 @@
 // 📁 frontend/src/context/CartContext.js
 "use client";
 import { createContext, useContext, useState, useEffect } from 'react';
+import { AuthContext } from './AuthContext'; 
 
 const CartContext = createContext();
 

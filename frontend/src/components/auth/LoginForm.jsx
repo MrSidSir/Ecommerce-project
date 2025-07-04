@@ -2,14 +2,18 @@
 
 import React, { useState } from 'react';
 import { Eye, EyeOff, ShoppingCart, Mail, Lock } from 'lucide-react';
+import { useRouter } from 'next/navigation';
+import axios from 'axios';
 
-export default function LoginPage() {
+export default function LoginForm() {
+  const router = useRouter();
   const [formData, setFormData] = useState({
     email: '',
     password: ''
   });
   const [showPassword, setShowPassword] = useState(false);
   const [errors, setErrors] = useState({});
+  const [loading, setLoading] = useState(false);
 
   const handleInputChange = (e) => {
     const { name, value } = e.target;
@@ -44,11 +48,37 @@ export default function LoginPage() {
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    if (validateForm()) {
-      console.log('Login submitted:', formData);
-      alert('Login successful!');
+    if (!validateForm()) return;
+
+    setLoading(true);
+    setErrors({});
+
+    try {
+      const res = await axios.post(
+        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/login`,
+        formData
+      );
+      
+      if (res.status === 200) {
+        // Store token if provided
+        if (res.data.token) {
+          localStorage.setItem('token', res.data.token);
+        }
+        
+        // Success message
+        alert('Login successful!');
+        
+        // Redirect to dashboard or home
+        router.push('/dashboard');
+      }
+    } catch (err) {
+      console.error('Login Error:', err);
+      const errorMessage = err.response?.data?.message || 'Login failed. Please try again.';
+      setErrors({ general: errorMessage });
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -108,7 +138,14 @@ export default function LoginPage() {
             <p className="text-gray-600">Enter your details below</p>
           </div>
 
-          <form onSubmit={handleSubmit} className="space-y-6">
+          {/* General Error Message */}
+          {errors.general && (
+            <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-md">
+              {errors.general}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-4 sm:px-8 pt-6 pb-8 mb-4 w-full max-w-xs sm:max-w-md mx-auto">
             {/* Email Field */}
             <div>
               <div className="relative">
@@ -154,9 +191,12 @@ export default function LoginPage() {
             <div className="flex items-center justify-between">
               <button
                 type="submit"
-                className="bg-red-600 text-white py-3 px-8 rounded-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors font-medium"
+                disabled={loading}
+                className={`bg-red-600 text-white py-3 px-8 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors font-medium ${
+                  loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'
+                }`}
               >
-                Log In
+                {loading ? 'Logging in...' : 'Log In'}
               </button>
               
               <a href="/forgot-password" className="text-red-600 hover:text-red-700 font-medium">

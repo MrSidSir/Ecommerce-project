@@ -11,9 +11,9 @@ import CartItem from '../src/components/cart/CartItem';
 
 export default function HomePage() {
   return (
-    <div>
+    <div className="max-w-7xl mx-auto px-2 sm:px-4">
       <HeroSlider />
-    <FlashSales />
+      <FlashSales />
       <BrowseCategory />
       <BestSellerSlider />
       <CategoryOfferSection />

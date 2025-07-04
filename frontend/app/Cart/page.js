@@ -445,72 +445,31 @@ const CartPage = () => {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="flex items-center justify-between mb-8">
-          <h1 className="text-3xl font-bold text-gray-900">Shopping Cart</h1>
-          <button
-            onClick={() => router.push('/')}
-            className="text-blue-500 hover:text-blue-600 font-medium"
-          >
-            ← Continue Shopping
-          </button>
-        </div>
-
-        {!cart || cart.items.length === 0 ? (
-          <div className="bg-white rounded-lg shadow p-8 text-center">
-            <div className="text-6xl mb-4">🛒</div>
-            <h2 className="text-2xl font-semibold text-gray-900 mb-2">Your cart is empty</h2>
-            <p className="text-gray-600 mb-6">Looks like you haven't added anything to your cart yet.</p>
-            <button
-              onClick={() => router.push('/')}
-              className="bg-blue-500 text-white px-8 py-3 rounded-lg hover:bg-blue-600 transition duration-200"
-            >
-              Start Shopping
-            </button>
-          </div>
-        ) : (
-          <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-            <div className="lg:col-span-2 space-y-4">
-              <div className="bg-white rounded-lg shadow p-6">
-                <div className="flex items-center justify-between mb-6">
-                  <h2 className="text-xl font-semibold">
-                    Cart Items ({cart.totalItems} {cart.totalItems === 1 ? 'item' : 'items'})
-                  </h2>
-                  {cart.items.length > 0 && (
-                    <button
-                      onClick={clearCart}
-                      disabled={updating}
-                      className="text-red-500 hover:text-red-600 font-medium disabled:opacity-50"
-                    >
-                      Clear Cart
-                    </button>
-                  )}
-                </div>
-
-                <div className="space-y-4">
-                  {cart.items.map((item) => (
-                    <CartItem
-                      key={item._id}
-                      item={item}
-                      onUpdateQuantity={updateQuantity}
-                      onRemove={removeItem}
-                      updating={updating}
-                    />
-                  ))}
-                </div>
-              </div>
+    <div className="max-w-5xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
+      <h1 className="text-lg sm:text-2xl font-bold mb-4">My Cart</h1>
+      <div className="flex flex-col md:flex-row gap-4 md:gap-8">
+        {/* Cart Items */}
+        <div className="flex-1 space-y-4">
+          {cart?.items.length === 0 ? (
+            <div className="text-center py-16">
+              <p className="text-gray-500">Your cart is empty.</p>
             </div>
-
-            <div className="lg:col-span-1">
-              <CartSummary
-                cart={cart}
-                onCheckout={proceedToCheckout}
+          ) : (
+            cart?.items.map((item) => (
+              <CartItem
+                key={item._id}
+                item={item}
+                onUpdateQuantity={updateQuantity}
+                onRemove={removeItem}
                 updating={updating}
               />
-            </div>
-          </div>
-        )}
+            ))
+          )}
+        </div>
+        {/* Cart Summary */}
+        <div className="w-full md:w-80 lg:w-96">
+          <CartSummary cart={cart} onCheckout={proceedToCheckout} updating={updating} />
+        </div>
       </div>
     </div>
   );

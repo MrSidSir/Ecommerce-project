@@ -19,6 +19,9 @@ export default function AuthProvider({ children }) {
   const login = async (email, password) => {
     const res = await axios.post("http://localhost:5000/api/auth/login", { email, password });
     if (res.status === 200) {
+      if (res.data.token) {
+        localStorage.setItem('token', res.data.token);
+      }
       localStorage.setItem("user", JSON.stringify(res.data));
       setCurrentUser(res.data);
     }
@@ -27,6 +30,7 @@ export default function AuthProvider({ children }) {
   // ✅ Logout function
   const logout = () => {
     localStorage.removeItem("user");
+    localStorage.removeItem("token");
     setCurrentUser(null);
   };
 

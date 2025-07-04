@@ -57,12 +57,12 @@ async function loadRoutes() {
     // ✅ API Routes
     app.use("/api/auth", authRoutes.default);
     app.use("/api/products", productRoutes.default);
-    // app.use("/api/cart", cartRoutes.default);
+    app.use("/api/cart", cartRoutes.default);
     app.use("/api/orders", orderRoutes.default);
     app.use("/api/dashboard", dashboardRoutes.default);
     app.use("/api/categories", categoryRoutes.default);
     app.use('/api/wishlist', wishlistRoutes.default); // Use .default for ES modules
-    app.use('/api/cart', cartRoutes);
+    
     
     console.log("✅ All routes loaded successfully");
   } catch (error) {

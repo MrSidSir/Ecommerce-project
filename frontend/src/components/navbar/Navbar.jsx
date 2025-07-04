@@ -5,13 +5,16 @@ import { FiSearch, FiHeart, FiShoppingCart, FiUser } from "react-icons/fi";
 import { BiUser, BiPackage, BiX, BiStar, BiLogOut } from "react-icons/bi";
 import { useRouter } from 'next/navigation';
 import { useCart } from '../context/CartContext';
+import i18n from '../../i18n';
+import { useTranslation } from 'react-i18next';
 
 export default function Navbar() {
-  const [language, setLanguage] = useState("English");
+  const { t } = useTranslation();
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(4); // Mock data - replace with actual wishlist context
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [language, setLanguage] = useState(i18n.language || 'en');
   
   const router = useRouter();
   const { cartCount, fetchCartCount } = useCart();
@@ -26,7 +29,11 @@ export default function Navbar() {
     }
   }, [fetchCartCount]);
 
-  const handleLanguageChange = (e) => setLanguage(e.target.value);
+  const handleLanguageChange = (e) => {
+    const langCode = e.target.value;
+    setLanguage(langCode);
+    i18n.changeLanguage(langCode);
+  };
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const closeDropdown = () => setIsDropdownOpen(false);
 
@@ -98,162 +105,163 @@ export default function Navbar() {
   ];
 
   return (
-    <div className="w-full">
+    <nav className="w-full">
       {/* Announcement Bar */}
-      <div className="bg-black text-white px-4 py-2 flex items-center justify-between">
-        <div className="flex items-center space-x-3">
-          <p className="text-sm">
-            Summer Sale For All Swim Suits And Free Express Delivery - OFF 50%!
-          </p>
+      <div className="bg-black text-white px-2 sm:px-4 py-2 flex flex-col sm:flex-row items-center justify-between text-xs sm:text-sm">
+        <div className="flex items-center space-x-2 sm:space-x-3">
+          <p className="truncate">{t('Summer Sale')}</p>
           <button 
             onClick={() => handleNavigation('/shop')}
-            className="bg-white text-black text-xs px-3 py-1 rounded hover:bg-gray-200 transition-colors"
+            className="bg-white text-black text-xs px-2 py-1 rounded hover:bg-gray-200 transition-colors mt-2 sm:mt-0"
           >
-            Shop Now
+            {t('Shop Now')}
           </button>
         </div>
         <select
           value={language}
           onChange={handleLanguageChange}
-          className="bg-gray-200 text-black px-2 py-1 rounded text-sm focus:outline-none"
+          className="bg-gray-200 text-black px-2 py-1 rounded text-xs sm:text-sm focus:outline-none mt-2 sm:mt-0"
         >
-          <option>English</option>
-          <option>Hindi</option>
-          <option>Urdu</option>
-          <option>Arabic</option>
-          <option>French</option>
+          <option value="en">English</option>
+          <option value="hi">Hindi</option>
+          <option value="ur">Urdu</option>
+          <option value="ar">Arabic</option>
+          <option value="fr">French</option>
         </select>
       </div>
 
       {/* Main Navbar */}
-      <div className="bg-white text-black px-6 md:px-16 py-4 mt-2 flex items-center justify-between shadow relative">
+      <div className="bg-white text-black px-2 sm:px-6 md:px-16 py-3 flex items-center justify-between shadow relative">
         {/* Left: Brand Name and Project Line */}
-        <div onClick={() => handleNavigation('/')} className="cursor-pointer">
-          <div className="text-2xl font-bold hover:text-red-500 transition-colors">
+        <div onClick={() => handleNavigation('/')} className="cursor-pointer min-w-fit">
+          <div className="text-lg sm:text-2xl font-bold hover:text-red-500 transition-colors">
             Exclusive
           </div>
-          <div className="text-sm text-gray-500 mt-1">
+          <div className="text-xs sm:text-sm text-gray-500 mt-1">
             Mr. Sid E-commerce Project
           </div>
         </div>
 
-        {/* Center: Menu Links */}
-        <div className="hidden md:flex space-x-8">
+        {/* Hamburger for mobile */}
+        <div className="md:hidden flex items-center ml-2">
+          <button onClick={toggleDropdown} className="p-2 focus:outline-none">
+            <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d={isDropdownOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"} />
+            </svg>
+          </button>
+        </div>
+
+        {/* Center: Menu Links (desktop) */}
+        <div className="hidden md:flex space-x-4 lg:space-x-8">
           <button 
             onClick={() => handleNavigation('/')} 
             className="hover:text-red-500 border-b-2 border-gray-300 pb-1 transition-colors"
           >
-            Home
+            {t('Home')}
           </button>
           <button 
             onClick={() => handleNavigation('/contact')} 
             className="hover:text-red-500 transition-colors"
           >
-            Contact
+            {t('Contact')}
           </button>
           <button 
             onClick={() => handleNavigation('/about')} 
             className="hover:text-red-500 transition-colors"
           >
-            About
+            {t('About')}
           </button>
           {!isLoggedIn && (
             <button 
               onClick={() => handleNavigation('/signup')} 
               className="hover:text-red-500 transition-colors"
             >
-              Sign Up
+              {t('Sign Up')}
             </button>
           )}
         </div>
 
         {/* Right: Search, Heart, Cart, User */}
-        <div className="flex items-center space-x-4">
-          {/* Search */}
-          <form onSubmit={handleSearch} className="flex items-center border rounded px-2 py-1 bg-gray-50 focus-within:border-red-500 transition-colors">
+        <div className="flex items-center space-x-2 sm:space-x-4">
+          {/* Search (collapsible on mobile) */}
+          <form onSubmit={handleSearch} className="hidden sm:flex items-center border rounded px-2 py-1 bg-gray-50 focus-within:border-red-500 transition-colors w-32 sm:w-64">
             <input 
               type="text" 
-              placeholder="What are you looking for?" 
+              placeholder={t('What are you looking for?')} 
               value={searchQuery}
               onChange={(e) => setSearchQuery(e.target.value)}
-              className="outline-none px-2 text-sm bg-transparent w-64"
+              className="outline-none px-2 text-xs sm:text-sm bg-transparent w-full"
             />
             <button type="submit" className="text-gray-500 hover:text-red-500 transition-colors">
               <FiSearch />
             </button>
           </form>
-          
+          {/* Mobile search icon */}
+          <button className="sm:hidden p-2" onClick={() => alert('Search feature for mobile coming soon!')}>
+            <FiSearch className="w-5 h-5" />
+          </button>
           {/* Wishlist Heart */}
           <div className="relative">
             <button 
               onClick={handleWishlistClick} 
-              className="text-xl hover:text-red-500 transition-colors focus:outline-none" 
+              className="text-lg sm:text-xl hover:text-red-500 transition-colors focus:outline-none" 
               title="Wishlist"
             >
               <FiHeart />
             </button>
             {isLoggedIn && wishlistCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                 {wishlistCount > 99 ? '99+' : wishlistCount}
               </span>
             )}
           </div>
-
           {/* Cart */}
           <div className="relative">
             <button 
               onClick={handleCartClick} 
-              className="text-xl hover:text-green-600 transition-colors focus:outline-none" 
-              title="Shopping Cart"
+              className="text-lg sm:text-xl hover:text-red-500 transition-colors focus:outline-none" 
+              title="Cart"
             >
               <FiShoppingCart />
             </button>
             {isLoggedIn && cartCount > 0 && (
-              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center">
+              <span className="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-4 w-4 flex items-center justify-center">
                 {cartCount > 99 ? '99+' : cartCount}
               </span>
             )}
           </div>
-
-          {/* User Account */}
-          <div className="relative">
-            <button 
-              onClick={handleAuthAction} 
-              className={`p-2 rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-offset-2 ${
-                isLoggedIn 
-                  ? 'bg-orange-500 text-white hover:bg-orange-600 focus:ring-orange-500' 
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300 focus:ring-gray-500'
-              }`}
-              title={isLoggedIn ? "Account Menu" : "Login"}
-            >
-              <FiUser className="w-5 h-5" />
-            </button>
-
-            {/* Dropdown Menu - Only show when logged in */}
-            {isLoggedIn && isDropdownOpen && (
-              <div className="absolute right-0 mt-2 w-64 bg-white rounded-lg shadow-lg border border-gray-200 z-50">
-                <div className="py-2">
-                  {menuItems.map((item, index) => (
-                    <button 
-                      key={index} 
-                      onClick={item.action} 
-                      className="w-full px-4 py-3 text-left hover:bg-gray-50 transition-colors flex items-center space-x-3 text-gray-700 hover:text-orange-500"
-                    >
-                      <span className="text-gray-500">{item.icon}</span>
-                      <span className="font-medium">{item.text}</span>
-                    </button>
-                  ))}
-                </div>
-              </div>
-            )}
-          </div>
+          {/* User */}
+          <button onClick={handleAuthAction} className="text-lg sm:text-xl hover:text-red-500 transition-colors focus:outline-none">
+            <FiUser />
+          </button>
         </div>
       </div>
 
-      {/* Click outside to close dropdown */}
+      {/* Mobile Dropdown Menu */}
       {isDropdownOpen && (
-        <div className="fixed inset-0 z-40" onClick={closeDropdown}></div>
+        <div className="md:hidden bg-white shadow-lg absolute w-full left-0 z-50 animate-fade-in">
+          <div className="flex flex-col space-y-2 py-4 px-4">
+            <button onClick={() => { handleNavigation('/'); closeDropdown(); }} className="py-2 text-left hover:text-red-500">{t('Home')}</button>
+            <button onClick={() => { handleNavigation('/contact'); closeDropdown(); }} className="py-2 text-left hover:text-red-500">{t('Contact')}</button>
+            <button onClick={() => { handleNavigation('/about'); closeDropdown(); }} className="py-2 text-left hover:text-red-500">{t('About')}</button>
+            {!isLoggedIn && (
+              <button onClick={() => { handleNavigation('/signup'); closeDropdown(); }} className="py-2 text-left hover:text-red-500">{t('Sign Up')}</button>
+            )}
+            <form onSubmit={handleSearch} className="flex items-center border rounded px-2 py-1 bg-gray-50 mt-2">
+              <input 
+                type="text" 
+                placeholder="Search..." 
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                className="outline-none px-2 text-xs bg-transparent w-full"
+              />
+              <button type="submit" className="text-gray-500 hover:text-red-500 transition-colors">
+                <FiSearch />
+              </button>
+            </form>
+          </div>
+        </div>
       )}
-    </div>
+    </nav>
   );
 }
