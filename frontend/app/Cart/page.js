@@ -4,6 +4,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Image from 'next/image';
+import { useTranslation } from "react-i18next";
 
 // Inline CartItem component to avoid import issues
 const CartItem = ({ item, onUpdateQuantity, onRemove, updating }) => {
@@ -267,7 +268,8 @@ const CartSummary = ({ cart, onCheckout, updating }) => {
   );
 };
 
-const CartPage = () => {
+export default function CartPage() {
+  const { t } = useTranslation();
   const [cart, setCart] = useState(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState('');
@@ -474,5 +476,3 @@ const CartPage = () => {
     </div>
   );
 };
-
-export default CartPage;

@@ -4,6 +4,7 @@ import React, { useState } from 'react';
 import { Eye, EyeOff, ShoppingCart, Mail, Lock } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import axios from 'axios';
+import { signIn } from "next-auth/react";
 
 export default function LoginForm() {
   const router = useRouter();
@@ -80,11 +81,6 @@ export default function LoginForm() {
     } finally {
       setLoading(false);
     }
-  };
-
-  const handleGoogleLogin = () => {
-    console.log('Google login clicked');
-    alert('Google login functionality to be implemented');
   };
 
   return (
@@ -207,7 +203,7 @@ export default function LoginForm() {
 
           {/* Google Login */}
           <button
-            onClick={handleGoogleLogin}
+            onClick={() => signIn('google')}
             className="w-full border border-gray-300 text-gray-700 py-3 px-4 rounded-md hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-gray-500 focus:ring-offset-2 transition-colors font-medium flex items-center justify-center space-x-2"
           >
             <svg className="h-5 w-5" viewBox="0 0 24 24">

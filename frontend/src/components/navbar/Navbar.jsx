@@ -7,14 +7,16 @@ import { useRouter } from 'next/navigation';
 import { useCart } from '../context/CartContext';
 import i18n from '../../i18n';
 import { useTranslation } from 'react-i18next';
+import { LanguageContext } from "../context/LanguageProvider";
+import { useContext } from "react";
 
 export default function Navbar() {
   const { t } = useTranslation();
+  const { language, changeLanguage } = useContext(LanguageContext);
   const [isDropdownOpen, setIsDropdownOpen] = useState(false);
   const [wishlistCount, setWishlistCount] = useState(4); // Mock data - replace with actual wishlist context
   const [searchQuery, setSearchQuery] = useState("");
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [language, setLanguage] = useState(i18n.language || 'en');
   
   const router = useRouter();
   const { cartCount, fetchCartCount } = useCart();
@@ -31,8 +33,7 @@ export default function Navbar() {
 
   const handleLanguageChange = (e) => {
     const langCode = e.target.value;
-    setLanguage(langCode);
-    i18n.changeLanguage(langCode);
+    changeLanguage(langCode);
   };
   const toggleDropdown = () => setIsDropdownOpen(!isDropdownOpen);
   const closeDropdown = () => setIsDropdownOpen(false);
