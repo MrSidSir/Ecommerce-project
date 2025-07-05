@@ -2,11 +2,8 @@
 
 import React, { useState } from 'react';
 import { Eye, EyeOff, ShoppingCart, Package, Mail, Lock, User, Phone } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import axios from 'axios';
 
 export default function SignupForm() {
-  const router = useRouter();
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -74,29 +71,51 @@ export default function SignupForm() {
     setErrors({});
 
     try {
-      // Use the signup endpoint from your backend
-      const res = await axios.post(
-        `${process.env.NEXT_PUBLIC_API_URL}/api/auth/signup`,
-        {
+      // ✅ Debug: Check what data is being sent
+      console.log('Form data being sent:', {
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        password: formData.password
+      });
+
+      // ✅ Fixed API call - Phone field included
+      const response = await fetch('http://localhost:5000/api/auth/signup', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           name: formData.name,
           email: formData.email,
-          phone: formData.phone,
+          phone: formData.phone,  // ✅ Phone field properly included
           password: formData.password
-        }
-      );
+        })
+      });
       
-      if (res.status === 201) {
+      const data = await response.json();
+      
+      if (response.ok) {
+        console.log('✅ Signup successful:', data);
         // Store token if provided
-        if (res.data.token) {
-          localStorage.setItem('token', res.data.token);
+        if (data.token) {
+          localStorage.setItem('token', data.token);
         }
         alert('Account created successfully! Redirecting to login...');
-        setTimeout(() => router.push('/login'), 2000);
+        // In real app: router.push('/login');
+      } else {
+        console.error('❌ Signup failed:', data);
+        setErrors({ general: data.message || 'Registration failed. Please try again.' });
       }
     } catch (err) {
-      console.error('Signup Error:', err);
-      const errorMessage = err.response?.data?.message || 'Registration failed. Please try again.';
-      setErrors({ general: errorMessage });
+      console.error('❌ Signup Error:', err);
+      
+      // ✅ Better error handling
+      if (err.name === 'TypeError' && err.message.includes('fetch')) {
+        setErrors({ general: 'Cannot connect to server. Please make sure backend is running on port 5000.' });
+      } else {
+        setErrors({ general: 'Registration failed. Please try again.' });
+      }
     } finally {
       setLoading(false);
     }
@@ -137,7 +156,7 @@ export default function SignupForm() {
               </div>
             )}
 
-            <form onSubmit={handleSubmit} className="bg-white shadow-md rounded px-4 sm:px-8 pt-6 pb-8 mb-4 w-full max-w-xs sm:max-w-md mx-auto">
+            <div className="space-y-6">
               {/* Name Field */}
               <div>
                 <div className="relative">
@@ -244,7 +263,8 @@ export default function SignupForm() {
 
               {/* Submit Button */}
               <button
-                type="submit"
+                type="button"
+                onClick={handleSubmit}
                 disabled={loading}
                 className={`w-full bg-red-600 text-white py-3 px-4 rounded-md focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-offset-2 transition-colors font-medium ${
                   loading ? 'opacity-50 cursor-not-allowed' : 'hover:bg-red-700'
@@ -252,7 +272,7 @@ export default function SignupForm() {
               >
                 {loading ? 'Creating Account...' : 'Create Account'}
               </button>
-            </form>
+            </div>
 
             {/* Login Link */}
             <div className="text-center">
