@@ -2,12 +2,14 @@
 
 import React, { useState, useEffect } from 'react';
 import { Heart, Eye, Trash2, ShoppingCart, Menu, X, ChevronDown, Search } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 
 const CompleteWishlistPage = () => {
   const [wishlistProducts, setWishlistProducts] = useState([]);
   const [recommendedProducts, setRecommendedProducts] = useState([]);
   const [isNavOpen, setIsNavOpen] = useState(false);
   const [searchQuery, setSearchQuery] = useState('');
+  const router = useRouter();
 
   // Sample wishlist data
   const sampleWishlistProducts = [
@@ -219,31 +221,30 @@ const CompleteWishlistPage = () => {
   );
 
   return (
-    <div className="max-w-7xl mx-auto px-2 sm:px-4 py-4 sm:py-8">
-      <h1 className="text-lg sm:text-2xl font-bold mb-4">My Wishlist</h1>
-      <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 gap-2 sm:gap-0">
-        <form onSubmit={handleSearch} className="flex items-center border rounded px-2 py-1 bg-gray-50 w-full sm:w-80">
-          <input
-            type="text"
-            placeholder="Search wishlist..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-            className="outline-none px-2 text-xs sm:text-sm bg-transparent w-full"
-          />
-          <button type="submit" className="text-gray-500 hover:text-red-500 transition-colors">
-            <Search size={16} />
-          </button>
-        </form>
+    <div className="max-w-4xl mx-auto px-2 sm:px-4 py-8">
+      {/* Go to Dashboard Button */}
+      <div className="flex justify-end mb-4">
         <button
-          onClick={moveAllToBag}
-          className="bg-black text-white px-3 py-2 rounded text-xs sm:text-sm hover:bg-gray-800 transition-colors w-full sm:w-auto"
+          onClick={() => router.push('/dashboard')}
+          className="bg-black text-white px-4 py-2 rounded hover:bg-gray-800 text-xs sm:text-sm"
         >
-          Move All To Cart
+          Go to Dashboard
         </button>
       </div>
-      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {wishlistProducts.map((product) => (
-          <ProductCard key={product.id} product={product} isWishlist />
+      {/* Wishlist Products */}
+      <h2 className="text-2xl font-bold mb-4">My Wishlist</h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
+        {wishlistProducts.map(product => (
+          <div key={product.id} className="bg-white rounded-lg shadow-md p-4 flex flex-col items-center">
+            <img src={product.image} alt={product.name} className="w-24 h-24 object-cover rounded mb-2" />
+            <div className="font-semibold text-gray-800 text-center mb-1">{product.name}</div>
+            <div className="text-red-500 font-bold mb-1">${product.currentPrice}</div>
+            <a href={`/product/${product.id}`} className="text-blue-600 underline text-xs mb-2">View Product</a>
+            <div className="flex gap-2">
+              <button onClick={() => removeFromWishlist(product.id)} className="bg-gray-200 text-gray-700 px-2 py-1 rounded text-xs hover:bg-red-500 hover:text-white">Remove</button>
+              <button onClick={() => addToCart(product.id)} className="bg-black text-white px-2 py-1 rounded text-xs hover:bg-gray-800">Add to Cart</button>
+            </div>
+          </div>
         ))}
       </div>
       <h2 className="text-base sm:text-lg font-semibold mt-8 mb-4">Recommended For You</h2>
