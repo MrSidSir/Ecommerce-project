@@ -243,12 +243,13 @@ const CartSummary = ({ cart, onCheckout, updating }) => {
       )}
 
       <button
-        onClick={onCheckout}
-        disabled={updating || !cart || cart.items.length === 0}
-        className="w-full bg-red-500 text-white py-3 rounded-lg font-medium hover:bg-red-600 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
-      >
-        {updating ? 'Processing...' : 'Proceed to Checkout'}
-      </button>
+  onClick={onCheckout}
+  disabled={updating || !cart || cart.items.length === 0}
+  className="w-full bg-gradient-to-r from-green-500 to-green-600 text-white py-3 rounded-lg font-semibold text-lg shadow-md hover:from-green-600 hover:to-green-700 transition duration-200 disabled:opacity-50 disabled:cursor-not-allowed"
+>
+  {updating ? 'Processing...' : '🛒 Proceed to Checkout'}
+</button>
+
 
       <div className="mt-6 pt-6 border-t space-y-2">
         <div className="flex items-center space-x-2 text-sm text-gray-600">

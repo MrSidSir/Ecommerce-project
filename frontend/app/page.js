@@ -10,6 +10,7 @@ import ServicesFeatures from '@/components/feature/ServicesFeatures';
 import CategoryDropdown from '@/components/CategoryDropdown/CategoryDropdown';
 import CartItem from '../src/components/cart/CartItem';
 import { useTranslation } from "react-i18next";
+import CheckoutForm from "../src/components/checkout/CheckoutForm";
 
 export default function HomePage() {
   const { t } = useTranslation();
@@ -24,6 +25,7 @@ export default function HomePage() {
       <FeaturedNewArrival />
       <ServicesFeatures />
       <CategoryDropdown />
+      <CheckoutForm />
     </div>
   );
 }

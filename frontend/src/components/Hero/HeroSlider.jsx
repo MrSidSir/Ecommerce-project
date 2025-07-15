@@ -100,7 +100,7 @@ const HeroSlider = () => {
       <div className="max-w-[1200px] mx-auto mt-4 px-4 lg:px-0">
         {/* ✅ Exclusive Heading */}
         <div className="mb-2">
-          <h1 className="text-2xl font-bold">Exclusive</h1>
+          <h1 className="text-2xl font-bold">Our Products Category</h1>
         </div>
 
         <div className="grid grid-cols-4 gap-4">
